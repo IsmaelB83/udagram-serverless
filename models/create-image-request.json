@@ -5,14 +5,10 @@
   "properties": {
     "title": {
       "type": "string"
-    },
-    "url": {
-      "type": "string"
     }
   },
   "required": [
-    "title",
-    "url"
+    "title"
   ],
   "additionalProperties": false
 }

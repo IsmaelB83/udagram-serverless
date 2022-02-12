@@ -17,7 +17,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     TableName: DB_TABLE,
     Item: {
       id: context.awsRequestId,
-      name: body.name,
+      name:   body.name,
       description: body.description
     }
   }
