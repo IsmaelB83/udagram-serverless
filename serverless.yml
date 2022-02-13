@@ -108,7 +108,7 @@ functions:
             requestModels:
               'application/json': ImageRequest
   SendUploadNotifications:
-    handler: src/lambda/s3/sendNotification.ts
+    handler: src/lambda/s3/sendNotification.handler
     events:
       - s3:
           bucket: ${self:provider.environment.IMAGES_S3_BUCKET}
