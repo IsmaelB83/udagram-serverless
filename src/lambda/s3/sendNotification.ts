@@ -5,5 +5,5 @@ export const handler: S3Handler = async (event: S3Event) => {
     const key = record.s3.object.key;
     console.log('Processing S3 item with key: ', key);
   }*/
-  console.log('Evento recibido');
+  console.log('Event received');
 }
