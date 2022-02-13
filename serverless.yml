@@ -107,6 +107,13 @@ functions:
             description: Create a new image
             requestModels:
               'application/json': ImageRequest
+  SendUploadNotifications:
+    handler: src/lambda/s3/sendNotification.ts
+    events:
+      - s3:
+          bucket: ${self:provider.environment.IMAGES_S3_BUCKET}
+          event: s3:ObjectCreated:*
+          existing: true
 
 resources:
   Resources:
@@ -176,6 +183,15 @@ resources:
                 - HEAD
               MaxAge: 300
     
+    SendUploadNotificationsPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !Ref SendUploadNotificationsLambdaFunction
+        Principal: '*'
+        Action: lambda:InvokeFunction
+        SourceAccount: !Ref AWS::AccountId
+        SourceArn: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}
+
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
