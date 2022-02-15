@@ -4,14 +4,29 @@ service: api-demo
 frameworkVersion: '3'
 
 plugins:
+  - serverless-webpack
   - serverless-plugin-typescript
   - serverless-aws-documentation
   - serverless-reqvalidator-plugin
-  
+
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Udagram API
+        description: Serverless application for image sharing
+    models:
+      - name: GroupRequest
+        contentType: application/json
+        schema: ${file(models/create-group-request.json)}
+      - name: ImageRequest
+        contentType: application/json
+        schema: ${file(models/create-image-request.json)}
+
 provider:
   name: aws
   runtime: nodejs14.x
-
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
@@ -34,6 +49,10 @@ provider:
       Action: 
         - dynamodb:Query
         - dynamodb:PutItem
+        - dynamodb:ListStreams
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
     - Effect: Allow
       Action: 
@@ -50,21 +69,6 @@ provider:
         - dynamodb:PutItem
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
-
-custom:
-  documentation:
-    api:
-      info:
-        version: v1.0.0
-        title: Udagram API
-        description: Serverless application for image sharing
-    models:
-      - name: GroupRequest
-        contentType: application/json
-        schema: ${file(models/create-group-request.json)}
-      - name: ImageRequest
-        contentType: application/json
-        schema: ${file(models/create-image-request.json)}
 
 functions:
   
