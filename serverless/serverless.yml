@@ -5,11 +5,12 @@ frameworkVersion: '3'
 
 plugins:
   - serverless-webpack
-  - serverless-plugin-typescript
   - serverless-aws-documentation
-  - serverless-reqvalidator-plugin
 
 custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
   documentation:
     api:
       info:
@@ -53,7 +54,17 @@ provider:
         - dynamodb:GetRecords
         - dynamodb:GetShardIterator
         - dynamodb:DescribeStream
+        - dynamodb:ListShards
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+    - Effect: Allow
+      Action: 
+        - dynamodb:ListStreams
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListShards
+        - dynamodb:ListStreams
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/streams/*  
     - Effect: Allow
       Action: 
         - dynamodb:Query
