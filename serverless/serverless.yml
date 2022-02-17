@@ -50,21 +50,7 @@ provider:
       Action: 
         - dynamodb:Query
         - dynamodb:PutItem
-        - dynamodb:ListStreams
-        - dynamodb:GetRecords
-        - dynamodb:GetShardIterator
-        - dynamodb:DescribeStream
-        - dynamodb:ListShards
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
-    - Effect: Allow
-      Action: 
-        - dynamodb:ListStreams
-        - dynamodb:GetRecords
-        - dynamodb:GetShardIterator
-        - dynamodb:DescribeStream
-        - dynamodb:ListShards
-        - dynamodb:ListStreams
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/streams/*  
     - Effect: Allow
       Action: 
         - dynamodb:Query
@@ -161,6 +147,12 @@ functions:
       - stream:
         type: dynamodb
         arn: !GetAtt ImagesDynamoDBTable.StreamArn
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action: 
+          - dynamodb:*
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
 
 resources:
   Resources:
