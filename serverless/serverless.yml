@@ -6,6 +6,7 @@ frameworkVersion: '3'
 plugins:
   - serverless-webpack
   - serverless-aws-documentation
+  - serverless-iam-roles-per-function
 
 custom:
   webpack:
@@ -148,6 +149,7 @@ functions:
         type: dynamodb
         arn: !GetAtt ImagesDynamoDBTable.StreamArn
     iamRoleStatementsInherit: true
+    iamRoleStatementsName: SyncWithElasticSearch-stream-role
     iamRoleStatements:
       - Effect: Allow
         Action: 
