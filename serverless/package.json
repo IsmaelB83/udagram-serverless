@@ -13,6 +13,8 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "elasticsearch": "^15.5.0",
+    "http-aws-es": "^6.0.0",
     "source-map-support": "^0.5.21"
   }
 }

@@ -143,6 +143,8 @@ functions:
           route: $disconnect
   
   SyncWithElasticSearch:
+    environment:
+      ES_ENDPOINT: !GetAtt ImagesSearch.DomainEndpoint
     handler: src/lambda/dynamoDb/elasticSearchSync.handler
     events:
       - stream:
@@ -260,3 +262,29 @@ resources:
               Principal: '*'
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
+    
+    ImagesSearch:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        ElasticsearchVersion: '6.3'
+        DomainName: images-search-${self:provider.stage}
+        ElasticsearchClusterConfig:
+          DedicatedMasterEnabled: false
+          InstanceCount: '1'
+          ZoneAwarenessEnabled: false
+          InstanceType: 't2.small.elasticsearch'
+        EBSOptions:
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: 'gp2'
+
+        AccessPolicies: 
+          Version: '2012-10-17'
+          Statement:
+            -
+              Effect: Allow
+              Principal: 
+                AWS: 'arn:aws:iam::173104205928:user/serverless'
+              Action: 'es:ESHttp*'
+              Resource: 'arn:aws:es:${self:provider.region}:173104205928:domain/images-search-${self:provider.stage}/*'
