@@ -19,11 +19,10 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
     }
 
     const newItem = record.dynamodb?.NewImage;
-    const imageId = newItem?.imageId.S;
     const body = {
-      imageId: imageId,
+      imageId: newItem?.imageId.S,
       groupId: newItem?.groupId.S,
-      imageUrl: newItem?.imageUrl.S,
+      imageUrl: newItem?.url.S,
       title: newItem?.title.S,
       timestamp: newItem?.timestamp.S
     }
@@ -31,7 +30,7 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
     await ES.index({
       index: 'images-index',
       type: 'images',
-      id: imageId,
+      id: newItem?.imageId.S,
       body
     })
     
