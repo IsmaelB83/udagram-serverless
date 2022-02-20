@@ -32,7 +32,6 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
       type: 'images',
       id: newItem?.imageId.S,
       body
-    })
-    
+    }) 
   }
 }

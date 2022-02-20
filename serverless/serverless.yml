@@ -284,10 +284,15 @@ resources:
             -
               Effect: Allow
               Principal:
+                AWS: !Sub arn:aws:sts::${AWS::AccountId}:assumed-role/SyncWithElasticSearch-stream-role/udagram-serverless-${self:provider.stage}-SyncWithElasticSearch
+              Action: 'es:*'
+              Resource: !Sub arn:aws:es:${self:provider.region}:${AWS::AccountId}:domain/images-search-${self:provider.stage}/*
+            - 
+              Effect: Allow
+              Principal:
                 AWS: '*'
-              Action: 'es:ESHttp*'
-              Resource: !Sub 'arn:aws:es:${self:provider.region}:${AWS::AccountId}:domain/images-search-${self:provider.stage}/*'
+              Action: 'es:*'
+              Resource: !Sub arn:aws:es:${self:provider.region}:${AWS::AccountId}:domain/images-search-${self:provider.stage}/*
               Condition:
                 IpAddress:
-                  aws:SourceIp:
-                    - "37.133.12.88"             
+                  aws:SourceIp: "37.133.12.88"
