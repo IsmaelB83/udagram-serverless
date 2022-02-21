@@ -1,0 +1,10 @@
+{
+  "name": "udagram-serverless",
+  "version": "1.0.0",
+  "description": "Packaged externals for udagram-serverless",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "source-map-support": "^0.5.21"
+  }
+}
