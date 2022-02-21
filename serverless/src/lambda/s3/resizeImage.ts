@@ -39,18 +39,25 @@ export const handler: SNSHandler = async (event: SNSEvent) => {
       console.log('Current item: ', currentItem);
       if (currentItem.Items) {
         // Updates table
-        const params = {
+        const params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
           TableName: IMAGES_TABLE,
-          Key: { "Id": currentItem.Items[0].Id },
-          UpdateExpression: 'set thumbnail = :s',
+          Key: { 
+            "groupId": currentItem.Items[0].groupId,
+            "timestamp": currentItem.Items[0].timestamp
+          },
+          UpdateExpression: 'SET thumbnail = :s',
           ExpressionAttributeValues: {
               ":s": `https://udagram-thumbnails-ibernal-dev.s3.amazonaws.com/${record.s3.object.key}`,
           },
-          ReturnValues: "UPDATED_NEW"
+          ReturnValues: "ALL_NEW"
         };
         console.log('Update images table: ', params);
-        const updated = await docClient.update(params);
-        console.log('Updated image item: ', updated);
+        try {
+          const data = await docClient.update(params);
+          console.log('Updated image item: ', data);
+        } catch (error) {
+          console.log('Error updating: ', error);
+        }
       }
     }
   }
