@@ -4,9 +4,9 @@ import 'source-map-support/register'
 import * as AWS from 'aws-sdk';
 
 // Constants
-const GROUPS_TABLE: string = process.env.GROUPS_TABLE || '';
-const IMAGES_TABLE: string = process.env.IMAGES_TABLE || '';
-const IMAGES_BUCKET: string = process.env.IMAGES_S3_BUCKET || '';
+const GROUPS_TABLE: string = process.env.GROUPS_TABLE!;
+const IMAGES_TABLE: string = process.env.IMAGES_TABLE!;
+const IMAGES_BUCKET: string = process.env.IMAGES_S3_BUCKET!;
 const SIGNED_URL_EXPIRATION: number = parseInt(process.env.SIGNED_URL_EXPIRATION || "300");
 
 // Variables
@@ -26,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         })
       }
     }
-    const groupId = event.pathParameters.groupId || '';
+    const groupId = event.pathParameters.groupId!;
     // Check groupId exists
     const validGroupId = await groupExists(groupId);
     if (!validGroupId) {
@@ -39,14 +39,15 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       }
     }
     // Generate image item
-    const body = JSON.parse(event.body || '');
+    const body = JSON.parse(event.body!);
     const imageId = context.awsRequestId;
     const item = {
       imageId: imageId,
       timestamp: new Date().toUTCString(),
       groupId: groupId,
       title: body.title,
-      url: `https://${IMAGES_BUCKET}.s3.amazonaws.com/${imageId}`
+      url: `https://${IMAGES_BUCKET}.s3.amazonaws.com/${imageId}`,
+      thumbnail: `https://${IMAGES_BUCKET}.s3.amazonaws.com/${imageId}`
     }
     // Signed url
     const url = await getUploadUrl(imageId);

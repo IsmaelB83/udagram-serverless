@@ -4,7 +4,7 @@ import 'source-map-support/register'
 import * as AWS from 'aws-sdk';
 
 // Constants
-const DB_TABLE: string = process.env.GROUPS_TABLE || '';
+const DB_TABLE: string = process.env.GROUPS_TABLE!;
 
 // Variables
 const docClient = new AWS.DynamoDB.DocumentClient();

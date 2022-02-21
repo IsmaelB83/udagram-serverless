@@ -4,7 +4,7 @@ import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 
 // Constants
-const CONNECTIONS_TABLE: string = process.env.CONNECTIONS_TABLE || '';
+const CONNECTIONS_TABLE: string = process.env.CONNECTIONS_TABLE!;
 const DOC_CLIENT = new AWS.DynamoDB.DocumentClient();
 
 // Lamdba

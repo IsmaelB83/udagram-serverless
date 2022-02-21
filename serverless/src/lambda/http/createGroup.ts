@@ -4,7 +4,7 @@ import 'source-map-support/register'
 import * as AWS from 'aws-sdk';
 
 // Constants
-const DB_TABLE: string = process.env.GROUPS_TABLE || '';
+const DB_TABLE: string = process.env.GROUPS_TABLE!;
 
 // Variables
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -12,7 +12,7 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 // Lamdba
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
 
-  const body = JSON.parse(event.body || '');
+  const body = JSON.parse(event.body!);
 
   const params = {
     TableName: DB_TABLE,

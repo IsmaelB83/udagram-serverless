@@ -4,8 +4,8 @@ import 'source-map-support/register'
 import * as AWS from 'aws-sdk';
 
 // Constants
-const GROUPS_TABLE: string = process.env.GROUPS_TABLE || '';
-const IMAGES_TABLE: string = process.env.IMAGES_TABLE || '';
+const GROUPS_TABLE: string = process.env.GROUPS_TABLE!;
+const IMAGES_TABLE: string = process.env.IMAGES_TABLE!;
 
 // Variables
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -23,7 +23,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         })
       }
     }
-    const groupId = event.pathParameters.groupId || '';
+    const groupId = event.pathParameters.groupId!;
     // Check groupId exists
     const validGroupId = await groupExists(groupId);
     if (!validGroupId) {

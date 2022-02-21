@@ -3,7 +3,7 @@ import 'source-map-support/register'
 import * as AWS from 'aws-sdk';
 
 const DOC_CLIENT = new AWS.DynamoDB.DocumentClient();
-const CONNECTIONS_TABLE = process.env.CONNECTIONS_TABLE || '';
+const CONNECTIONS_TABLE = process.env.CONNECTIONS_TABLE!;
 const STAGE = process.env.STAGE;
 const API_ID = process.env.API_ID;
 

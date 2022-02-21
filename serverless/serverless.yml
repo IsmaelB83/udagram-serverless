@@ -39,6 +39,7 @@ provider:
     CONNECTIONS_TABLE: Connections-${self:provider.stage}
     IMAGES_ID_INDEX: ImagesIdIndex
     IMAGES_S3_BUCKET: udagram-images-ibernal-${self:provider.stage}
+    THUMBNAILS_S3_BUCKET: udagram-thumbnails-ibernal-${self:provider.stage}
     IMAGES_TOPIC: imagesTopic-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
@@ -63,6 +64,10 @@ provider:
         - s3:PutObject
         - s3:GetObject
       Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::${self:provider.environment.THUMBNAILS_S3_BUCKET}/*
     - Effect: Allow
       Action: 
         - dynamodb:Scan
@@ -138,7 +143,18 @@ functions:
                 - Ref: AWS::AccountId
                 - ${self:provider.environment.IMAGES_TOPIC}
                 # Equivalent? !Sub arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${self:provider.environment.IMAGES_TOPIC}
-
+  ResizeImage:
+    handler: src/lambda/s3/resizeImage.handler
+    events:
+      - sns:
+          topicName: ${self:provider.environment.IMAGES_TOPIC}
+          arn:
+            Fn::Join:
+              - ':'
+              - - arn:aws:sns
+                - Ref: AWS::Region
+                - Ref: AWS::AccountId
+                - ${self:provider.environment.IMAGES_TOPIC}
   
   ConnectHandler:
     handler: src/lambda/websocket/connect.handler
@@ -259,7 +275,26 @@ resources:
                 - HEAD
               MaxAge: 300
     
-    BucketPolicy:
+    ThumbnailsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.THUMBNAILS_S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - 
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 300
+
+    AttachmentsBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket: !Ref AttachmentsBucket
@@ -272,6 +307,20 @@ resources:
               Principal: '*'
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
+    
+    ThumbnailsBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref ThumbnailsBucket
+        PolicyDocument: 
+          Id: MyPolicy
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.THUMBNAILS_S3_BUCKET}/*'
     
     SendUploadNotificationsPermission:
       Type: AWS::Lambda::Permission

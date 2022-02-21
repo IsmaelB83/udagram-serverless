@@ -4,8 +4,8 @@ import 'source-map-support/register'
 import * as AWS from 'aws-sdk';
 
 // Constants
-const IMAGES_TABLE: string = process.env.IMAGES_TABLE || '';
-const IMAGES_ID_INDEX: string = process.env.IMAGES_ID_INDEX || '';
+const IMAGES_TABLE: string = process.env.IMAGES_TABLE!;
+const IMAGES_ID_INDEX: string = process.env.IMAGES_ID_INDEX!;
 
 // Variables
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -24,7 +24,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       }
     }
     // Query image
-    const imageId = event.pathParameters.imageId || '';
+    const imageId = event.pathParameters.imageId!;
     const result = await docClient.query({
       TableName: IMAGES_TABLE,
       IndexName: IMAGES_ID_INDEX,
