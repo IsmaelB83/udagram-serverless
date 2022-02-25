@@ -3,6 +3,6 @@ export interface ImageModel {
   timestamp: string
   title: string
   imageId: string
-  url: string
+  url: string,
   thumbnail: string
 }

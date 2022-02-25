@@ -7,11 +7,11 @@ export async function getImages(groupId: string): Promise<ImageModel[]> {
   console.log('Fetching images')
   const response = await fetch(`${apiEndpoint}/groups/${groupId}/images`)
   const result = await response.json()
-
   return result.Items
 }
 
 export async function createImage(
+  idToken: string,
   newImage: ImageUploadInfo
 ): Promise<ImageUploadResponse> {
 
@@ -20,7 +20,8 @@ export async function createImage(
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
       },
       body: JSON.stringify({
         title: newImage.title
