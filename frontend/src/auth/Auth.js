@@ -2,6 +2,7 @@ import auth0 from 'auth0-js';
 import { authConfig } from '../config';
 
 export default class Auth {
+
   accessToken;
   idToken;
   expiresAt;
@@ -16,7 +17,6 @@ export default class Auth {
 
   constructor(history) {
     this.history = history
-
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -31,6 +31,7 @@ export default class Auth {
   }
 
   handleAuthentication() {
+    console.log('handleAuthentication');
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         console.log('Access token: ', authResult.accessToken)
@@ -55,14 +56,16 @@ export default class Auth {
   setSession(authResult) {
     // Set isLoggedIn flag in localStorage
     localStorage.setItem('isLoggedIn', 'true');
-
     // Set the time that the access token will expire at
     let expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
-
+    localStorage.setItem('accessToken', this.accessToken);
+    localStorage.setItem('idToken', this.idToken);
+    localStorage.setItem('expiresAt', this.expiresAt);
     // navigate to the home route
+    console.log(this.history);
     this.history.replace('/');
   }
 
